@@ -3,21 +3,34 @@ include_once("models/appointment.php");
 
 class DataHandler
 {
+    private $db_obj;
+
+    function __construct($db_obj)
+    {
+        $this->db_obj = $db_obj;
+    }
+
     public function queryAllAppointments()
     {
-        $data = $this->getTestData();
+        $data = $this->getAllAppointments();
 
         return $data;
     }
 
-    private static function getTestData()
+    private function getAllAppointments()
     {
-        $data = [
-            new Appointment(1, "Meeting", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam", "12.04"),
-            new Appointment(2, "Review", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam", "13.04"),
-            new Appointment(3, "Test", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam", "10.04"),
-            new Appointment(4, "Stand-Up", "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam", "12.06")
-        ];
+        $sql_allAppointments = "SELECT * 
+                                FROM appointments";
+
+        $result_allAppointments = mysqli_query($this->db_obj, $sql_allAppointments);
+
+        $data = [];
+
+        while ($allAppointments = $result_allAppointments->fetch_assoc()) {
+            $newAppoitnment = new Appointment($allAppointments["id"], $allAppointments["title"],
+                                              $allAppointments["description"],$allAppointments["date"]);
+            $data[] = $newAppoitnment;
+        }
 
         return $data;
     }

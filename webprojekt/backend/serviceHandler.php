@@ -1,5 +1,6 @@
 <?php
 include_once("businesslogic/simpleLogic.php");
+include ("db/dbaccess.php");
 
 $method = "";
 $searchTerm = "";
@@ -7,7 +8,7 @@ $searchTerm = "";
 isset($_GET["method"]) ? $method = $_GET["method"] : false;
 isset($_GET["param"]) ? $searchTerm = $_GET["param"] : false;
 
-$logic = new SimpleLogic();
+$logic = new SimpleLogic($db_obj);
 
 $result = $logic->handleRequest($method, $searchTerm);
 

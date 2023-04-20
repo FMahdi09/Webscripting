@@ -6,9 +6,9 @@ class SimpleLogic
     
     private $dataHandler;
 
-    function __construct()
+    function __construct($db_obj)
     {
-        $this->dataHandler = new DataHandler;
+        $this->dataHandler = new DataHandler($db_obj);
     }
 
     function handleRequest($method, $searchTearm)
