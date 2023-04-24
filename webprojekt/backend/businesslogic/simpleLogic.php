@@ -11,12 +11,20 @@ class SimpleLogic
         $this->dataHandler = new DataHandler($db_obj);
     }
 
-    function handleRequest($method, $searchTearm)
+    function handleRequest($method, $param)
     {
         switch($method)
         {
             case "all":
                 $data = $this->dataHandler->queryAllAppointments();
+                break;
+
+            case "byID":
+                $data = $this->dataHandler->queryAppointmentsByID($param);
+                break;
+
+            case "insertEntry":
+                $data = $this->dataHandler->insertEntry($param);
                 break;
 
             default:

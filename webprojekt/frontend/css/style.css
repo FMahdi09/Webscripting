@@ -9,3 +9,9 @@
 .border-dark{
     border-color: black;
 }
+
+.custom-checkbox{
+    width: 3rem;
+    height: 3rem;
+    border-color: darkgrey;
+}

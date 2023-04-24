@@ -3,14 +3,20 @@ include_once("businesslogic/simpleLogic.php");
 include ("db/dbaccess.php");
 
 $method = "";
-$searchTerm = "";
+$param = "";
 
-isset($_GET["method"]) ? $method = $_GET["method"] : false;
-isset($_GET["param"]) ? $searchTerm = $_GET["param"] : false;
+isset($_GET["method"]) ? $method = $_GET["method"] : $method = $_POST["method"];
+isset($_GET["param"]) ? $param = $_GET["param"] : $param = $_POST["param"];
 
 $logic = new SimpleLogic($db_obj);
 
-$result = $logic->handleRequest($method, $searchTerm);
+if(isset($_POST["param"]))
+{
+    $param = json_decode($param);
+}
+
+$result = $logic->handleRequest($method, $param);
+
 
 if($result == null)
 {

@@ -33,25 +33,64 @@
 
     <!-- content -->
     <div class="container">
-        <div id="appointmentMain" class="row d-flex justify-content-center mt-3">
-            <div class="col-lg-10 col-xl-8 border rounded bg-white p-5">
-                <!-- Appointment-header -->
-                <div id="appointment-header" class="row">
-                    <div class="col-md-6 col-lg-8 fw-bold fs-4 mb-3">   
-                        Your Appointments:
+        <div class="row d-flex justify-content-center mt-3">
+            <div id="contentWindow" class="col-lg-10 col-xl-8 border rounded bg-white p-5">
+
+                <!-- list of all appointments -->
+                <div id="appointment-list">
+                    <!-- Appointment-header -->
+                    <div id="appointment-header" class="row">
+                        <div class="col-md-6 col-lg-8 fw-bold fs-4 mb-3">   
+                            Your Appointments:
+                        </div>
+                        <div class="col-md-6 col-lg-4 mb-5">
+                            <input class="form-control mr-sm-2" type="search" placeholder="Search by title ...">
+                        </div>
                     </div>
-                    <div class="col-md-6 col-lg-4 mb-5">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search by title ...">
+                    <!-- Appointment-body -->
+                    <div id="appointment-body"></div>
+                    <!-- Error -->
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-xl-4 col-lg-5 col-md-6">
+                            <p id="error"></p>
+                        </div>
                     </div>
                 </div>
-                <!-- Appointment-list -->
-                <div id="appointment-list"></div>
-                <!-- Error -->
-                <div class="row d-flex justify-content-center">
-                    <div class="col-xl-4 col-lg-5 col-md-6">
-                        <p id="error"></p>
+                <!-- /list -->
+
+                <!-- Appointment-Details -->
+                <div id="details">
+                    <!-- Details-header -->
+                    <div id="details-header" class="row border-bottom border-black mb-3">
+                        <div id="title" class="col-md-8 fw-bold fs-4 mb-3"></div>
+                        <div class="col-md-4 mb-3">
+                            <input id="user_name" class="form-control mr-sm-2" type="search" placeholder="Your Name">
+                        </div>
+                    </div>
+                    <!-- Details-body -->
+                    <div id="details-body" class="row">
+                        <div class="col-md-8 mb-3 px-lg-4">
+                            <!-- description -->
+                            <div class="fw-bold fs-5 mb-3">Description:</div>
+                            <p id="description"></p>
+                            <!-- comments -->
+                            <div id="comments">
+                                <div class="fw-bold fs-5 mb-3">Comments:</div>
+                                <textarea id="user_comment" class="form-control mb-3" rows="1" placeholder="add comment ..."></textarea>
+                            </div>
+                        </div>
+                        <!-- dates -->
+                        <div id="dates" class="col-md-4"></div>
+                        <!-- buttons -->
+                        <div class="col border-top border-black pt-4">
+                            <button id="goBack" type="button" class="btn btn-outline-primary">Back</button>
+                            <button id="submitEntry" type="button" class="btn btn-outline-primary">Submit</button>
+                            <p id="submitError" class="text-danger mt-3"></p>
+                        </div>
                     </div>
                 </div>
+                <!-- /Details -->
+
             </div>
         </div>
     </div>
@@ -76,19 +115,35 @@
     <!-- /footer -->
 </main>
 
-<!-- errorModal -->
-
-<div class="modal fade">
+<!-- Modal -->
+<div id="modal" class="modal fade">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div>
-                
+            <div class="modal-header">
+                <h5 id="modalTitle" class="modal-title"></h5>
+                </button type='button' class='btn-close' data-bs-dismiss='modal'>
             </div>
+            <div id="modalErrorMsg" class="modal-body"></div>
         </div>
     </div>
 </div>
+<!-- /Modal -->
 
-<!-- /errorModal -->
+<!-- Date-Struktur
+
+<div class="row border-bottom border-black mb-3">
+    <div class="col-8">
+        <p id="date">Mi 23.10</p>
+        <p id="time">15:00 - 16:30</p>
+    </div>
+    <div class="col-4 d-flex justify-content-center align-items-center pb-3">
+        <div class="form-check">
+            <input class="form-check-input custom-checkbox" type="checkbox">
+        </div>
+    </div>
+</div>
+            
+-->
 
 </body>
 </html>
