@@ -1,11 +1,19 @@
 $(function(){
 
     $("#details").hide();
+    $("#appointment-creation").hide();
 
-    loadData("all", "-");
+    showAppointmentList();
 
     $("#submitEntry").on("click", submitEntry);
+    
     $("#goBack").on("click", hideDetails);
+
+    $("#create").on("click", showAppointmentCreation);
+
+    $("#creation-cancel").on("click", hideAppointmentCreation);
+
+    $("#creation-submit").on("click", submitAppointment);
 
     $("#user_name").on("keydown", function(){
         $("#user_name").removeClass("is-invalid");
@@ -61,6 +69,7 @@ function sendData(postMethod : string, data : string)
         {
             showModal("Your entry has been made.", "Success");
             hideDetails();
+            hideAppointmentCreation();
         },
         error: function(error)
         {
@@ -82,6 +91,28 @@ function showModal(modalMsg : string, modalTitle : string)
     $("#modal").modal("show");
 }
 
+function showAppointmentCreation()
+{
+    hideAppointmentList();
+
+    $("#appointment-creation").show();
+}
+
+
+function hideAppointmentList()
+{
+    $("#appointment-body").empty();
+
+    $("#appointment-list").hide();
+}
+
+function showAppointmentList()
+{
+    loadData("all", "-");
+
+    $("#appointment-list").show();
+}
+
 function hideDetails()
 {
     $("#details").hide();
@@ -90,12 +121,13 @@ function hideDetails()
     $("#submitError").text("");
     $("#user_name").removeClass("is-invalid");
     $(".cmt").remove();
-    $("#appointment-list").show();
+    
+    showAppointmentList();
 }
 
 function showAppointmentDetails(response : any)
 {
-    $("#appointment-list").hide();
+    hideAppointmentList();
 
     $("#title").text(response[0]["title"]);
     $("#description").text(response[0]["description"]);
@@ -115,6 +147,20 @@ function showAppointmentDetails(response : any)
     }
 
     $("#details").show();
+}
+
+function hideAppointmentCreation()
+{
+    $("#create-title").val("");
+    $("#create-title").removeClass("is-invalid");
+    $("#create-description").val("");
+    $("#create-description").removeClass("is-invalid");
+    $("#create-date").val("");
+    $("#create-date").removeClass("is-invalid");
+    $("#createError").text("");
+    $("#appointment-creation").hide();
+
+    showAppointmentList();
 }
 
 function submitEntry()
@@ -146,6 +192,46 @@ function submitEntry()
     let $data = {comment: $comment, name: $name, date_id: $checkedValue}
 
     sendData("insertEntry", JSON.stringify($data));
+}
+
+function submitAppointment()
+{
+    //get title
+    var $title = $("#create-title").val() as string;
+
+    if($title === "")
+    {
+        $("#create-title").addClass("is-invalid");
+        $("#createError").text("Please enter a title");
+        return;
+    }
+
+    $("#create-title").removeClass("is-invalid");
+
+    //get description
+    var $description = $("#create-description").val() as string;
+
+    if($description === "")
+    {
+        $("#create-description").addClass("is-invalid");
+        $("#createError").text("Please enter a description");
+        return;
+    }
+
+    $("#create-description").removeClass("is-invalid");
+
+    //get date
+    var $date = $("#create-date").val() as string;
+
+    if($date === "")
+    {
+        $("#createError").text("Please enter a date");
+        return;
+    }
+
+    let $data = {title: $title, description: $description, date: $date};
+
+    sendData("insertAppointment", JSON.stringify($data));
 }
 
 function createComment(response : any)

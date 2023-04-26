@@ -15,3 +15,7 @@
     height: 3rem;
     border-color: darkgrey;
 }
+
+.rounded-button{
+    border-radius: 12px;
+}

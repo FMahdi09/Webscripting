@@ -27,6 +27,10 @@ class SimpleLogic
                 $data = $this->dataHandler->insertEntry($param);
                 break;
 
+            case "insertAppointment":
+                $data = $this->dataHandler->insertAppointment($param);
+                break;
+
             default:
                 $data = null;
                 break;

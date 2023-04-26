@@ -28,6 +28,9 @@
         <span class="navbar-brand mb-0 px-3 fw-bold fs-3">
             Appointment Finder
         </span>
+        <span class="me-5">
+            <button id="create" class="btn btn-outline-primary rounded-button px-3">Create</button>
+        </span>
     </nav>
     <!-- /header -->
 
@@ -91,28 +94,49 @@
                 </div>
                 <!-- /Details -->
 
+                <!-- Appointment-creation -->
+                <div id="appointment-creation">
+                    <!-- header -->
+                    <div id="creation-header" class="row">
+                        <div class="col-lg-6 pb-3 fw-bold fs-4 mb-3 border-bottom border-black">   
+                            Create Appointment:
+                        </div>
+                    </div>
+                    <!-- body -->
+                    <div id="creation-body">
+                        <div class="row mb-3">
+                            <div class="col-lg-8">
+                                <label for="create-title" class="mb-3">Title:</label>
+                                <input type="text" class="form-control" id="create-title" placeholder="enter your title here ...">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-8">
+                                <label for="create-description" class="mb-3">Description:</label>
+                                <textarea class="form-control" rows="4" id="create-description" placeholder="description ..."></textarea>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-lg-8">
+                                <p>Due Date:</p>
+                                <input type="date" id="create-date">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <button id="creation-submit" class="btn btn-outline-primary m   -3">Submit</button>
+                                <button id="creation-cancel" class="btn btn-outline-danger m-3">Cancel</button>
+                                <p id="createError" class="text-danger mt-3"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Appointment-creation -->
+
             </div>
         </div>
     </div>
     <!-- /content -->
-
-    <!-- footer -->
-    <footer class="mt-auto">
-        <div class="container-fluid py-2">
-            <nav class="navbar d-flex justify-content-center my-1 text-muted">
-                <div class="nav-item px-2">
-                    Help
-                </div>
-                <div class="nav-item px-2">
-                    Impressum
-                </div>
-                <div class="nav-item px-2">
-                    Privacy Settings
-                </div>
-            </nav>
-        </div>
-    </footer>
-    <!-- /footer -->
 </main>
 
 <!-- Modal -->

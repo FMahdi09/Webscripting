@@ -33,6 +33,13 @@ class DataHandler
         return true;
     }
 
+    public function insertAppointment($data)
+    {
+        $this->insertAppointmentDB($data);
+
+        return true;
+    }
+
     private function getAllAppointments()
     {
         $data = [];
@@ -118,5 +125,17 @@ class DataHandler
         $stmt_insertEntry->bind_param("iiss", $appointment_id["appointment_id"], $data->date_id, $data->name, $data->comment);
 
         $stmt_insertEntry->execute();
+    }
+
+    private function insertAppointmentDB($data)
+    {
+        //insert given data into db
+        $sql_insertAppointment = "INSERT INTO appointments (title, description, date) VALUES (?,?,?)";
+
+        $stmt_insertAppointment = $this->db_obj->prepare($sql_insertAppointment);
+
+        $stmt_insertAppointment->bind_param("sss", $data->title, $data->description, $data->date);
+
+        $stmt_insertAppointment->execute();
     }
 }
