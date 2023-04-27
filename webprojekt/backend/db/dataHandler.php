@@ -45,7 +45,8 @@ class DataHandler
         $data = [];
 
         $sql_allAppointments = "SELECT * 
-                                FROM appointments";
+                                FROM appointments
+                                ORDER BY id desc";
 
         $result_allAppointments = mysqli_query($this->db_obj, $sql_allAppointments);
 
@@ -134,8 +135,38 @@ class DataHandler
 
         $stmt_insertAppointment = $this->db_obj->prepare($sql_insertAppointment);
 
-        $stmt_insertAppointment->bind_param("sss", $data->title, $data->description, $data->date);
+        $stmt_insertAppointment->bind_param("sss", $data[0]->title, $data[0]->description, $data[0]->date);
 
         $stmt_insertAppointment->execute();
+
+        $title = $data[0]->title;
+        $description = $data[0]->description;
+        $date = $data[0]->date;
+
+        //get id of insertet appointment
+        $sql_selectAppointmentID = "SELECT id
+                                    FROM appointments
+                                    WHERE title = '$title'
+                                          AND 
+                                          description = '$description'
+                                          AND
+                                          date = '$date'";
+    
+        $result_selectAppointmentID = mysqli_query($this->db_obj, $sql_selectAppointmentID);
+
+        $id = mysqli_fetch_assoc($result_selectAppointmentID);
+
+        //insert dates
+        $sql_insertDate = "INSERT INTO dates (appointment_id, time_begin, time_end, date) VALUES (?,?,?,?)";
+
+        $stmt_insertDate = $this->db_obj->prepare($sql_insertDate);
+
+        for($i = 1; $i < sizeof($data); ++$i)
+        {
+            $stmt_insertDate->bind_param("isss", $id["id"] ,$data[$i]->begin, $data[$i]->end, $data[$i]->date);
+
+            $stmt_insertDate->execute();
+        }
+
     }
 }

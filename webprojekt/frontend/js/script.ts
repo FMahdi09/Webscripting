@@ -5,6 +5,8 @@ $(function(){
 
     showAppointmentList();
 
+    $("#add-meeting").on("click", addMeeting);
+
     $("#submitEntry").on("click", submitEntry);
     
     $("#goBack").on("click", hideDetails);
@@ -111,6 +113,8 @@ function showAppointmentCreation()
     $("#user_name").removeClass("is-invalid");
     $(".cmt").remove();
 
+    addMeeting();
+
     $("#appointment-creation").show();
 }
 
@@ -175,6 +179,7 @@ function hideAppointmentCreation()
     $("#create-date").removeClass("is-invalid");
     $("#createError").text("");
     $("#appointment-creation").hide();
+    $(".meeting-entry").remove();
 
     showAppointmentList();
 }
@@ -212,6 +217,8 @@ function submitEntry()
 
 function submitAppointment()
 {
+    $("#createError").text("");
+
     //get title
     var $title = $("#create-title").val() as string;
 
@@ -245,9 +252,35 @@ function submitAppointment()
         return;
     }
 
-    let $data = {title: $title, description: $description, date: $date};
+    var $data = [];
 
-    sendData("insertAppointment", JSON.stringify($data));
+    $data.push({title: $title, description: $description, date: $date});
+
+    
+    $("#meeting-dates").children(".meeting-entry").each(function(){
+
+        var $meeting_date = $(this).children("#meetin-date").val() as string;
+
+        var $meeting_begin = $(this).children("#meetin-begintime").val() as string;
+
+        var $meeting_end = $(this).children("#meetin-endtime").val() as string;
+
+        if ($meeting_date === "" ||
+            $meeting_begin === "" ||
+            $meeting_end === "")
+        {
+            $("#createError").text("Please enter all fields");
+            return;
+        }
+
+        $data.push({date: $meeting_date, begin: $meeting_begin, end: $meeting_end});
+    });
+
+    if($("#createError").text() === "")
+    {
+        console.log($data);
+        sendData("insertAppointment", JSON.stringify($data));
+    }
 }
 
 function createComment(response : any)
@@ -336,4 +369,26 @@ function createAppointments(response: any)
     $(".card").on("click", function () {
         loadData("byID", $(this).attr("id") as string);
     });
+}
+
+function addMeeting()
+{
+    var $body = $("<div>", {"class": "meeting-entry mt-3"});
+
+    var $date = $("<input>", {id: "meetin-date", "type": "date"});
+    $body.append($date);
+
+    var $titlebegin = $("<span>", {text: " Begin: "});
+    $body.append($titlebegin);
+
+    var $begin = $("<input>", {id: "meetin-begintime", "type": "time"});
+    $body.append($begin);
+
+    var $titleEnd = $("<span>", {text: " End: "});
+    $body.append($titleEnd);
+
+    var $end = $("<input>", {id: "meetin-endtime", "type": "time"});
+    $body.append($end);
+
+    $("#meeting-dates").append($body);
 }

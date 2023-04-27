@@ -2,6 +2,7 @@ $(function () {
     $("#details").hide();
     $("#appointment-creation").hide();
     showAppointmentList();
+    $("#add-meeting").on("click", addMeeting);
     $("#submitEntry").on("click", submitEntry);
     $("#goBack").on("click", hideDetails);
     $("#create").on("click", showAppointmentCreation);
@@ -83,6 +84,7 @@ function showAppointmentCreation() {
     $("#submitError").text("");
     $("#user_name").removeClass("is-invalid");
     $(".cmt").remove();
+    addMeeting();
     $("#appointment-creation").show();
 }
 function hideAppointmentList() {
@@ -126,6 +128,7 @@ function hideAppointmentCreation() {
     $("#create-date").removeClass("is-invalid");
     $("#createError").text("");
     $("#appointment-creation").hide();
+    $(".meeting-entry").remove();
     showAppointmentList();
 }
 function submitEntry() {
@@ -149,6 +152,7 @@ function submitEntry() {
     sendData("insertEntry", JSON.stringify($data));
 }
 function submitAppointment() {
+    $("#createError").text("");
     //get title
     var $title = $("#create-title").val();
     if ($title === "") {
@@ -171,8 +175,24 @@ function submitAppointment() {
         $("#createError").text("Please enter a date");
         return;
     }
-    var $data = { title: $title, description: $description, date: $date };
-    sendData("insertAppointment", JSON.stringify($data));
+    var $data = [];
+    $data.push({ title: $title, description: $description, date: $date });
+    $("#meeting-dates").children(".meeting-entry").each(function () {
+        var $meeting_date = $(this).children("#meetin-date").val();
+        var $meeting_begin = $(this).children("#meetin-begintime").val();
+        var $meeting_end = $(this).children("#meetin-endtime").val();
+        if ($meeting_date === "" ||
+            $meeting_begin === "" ||
+            $meeting_end === "") {
+            $("#createError").text("Please enter all fields");
+            return;
+        }
+        $data.push({ date: $meeting_date, begin: $meeting_begin, end: $meeting_end });
+    });
+    if ($("#createError").text() === "") {
+        console.log($data);
+        sendData("insertAppointment", JSON.stringify($data));
+    }
 }
 function createComment(response) {
     var $comment = $("<div>", { "class": "cmt py-2 px-2 border" });
@@ -235,4 +255,18 @@ function createAppointments(response) {
     $(".card").on("click", function () {
         loadData("byID", $(this).attr("id"));
     });
+}
+function addMeeting() {
+    var $body = $("<div>", { "class": "meeting-entry mt-3" });
+    var $date = $("<input>", { id: "meetin-date", "type": "date" });
+    $body.append($date);
+    var $titlebegin = $("<span>", { text: " Begin: " });
+    $body.append($titlebegin);
+    var $begin = $("<input>", { id: "meetin-begintime", "type": "time" });
+    $body.append($begin);
+    var $titleEnd = $("<span>", { text: " End: " });
+    $body.append($titleEnd);
+    var $end = $("<input>", { id: "meetin-endtime", "type": "time" });
+    $body.append($end);
+    $("#meeting-dates").append($body);
 }
