@@ -170,13 +170,19 @@ class DataHandler
         //get id of insertet appointment
         $sql_selectAppointmentID = "SELECT id
                                     FROM appointments
-                                    WHERE title = '$title'
+                                    WHERE title = ?
                                           AND 
-                                          description = '$description'
+                                          description = ?
                                           AND
-                                          date = '$date'";
+                                          date = ?";
+
+        $stmt_selectAppointmentID = $this->db_obj->prepare($sql_selectAppointmentID);
+
+        $stmt_selectAppointmentID->bind_param("sss", $title, $description, $date);
+
+        $stmt_selectAppointmentID->execute();
     
-        $result_selectAppointmentID = mysqli_query($this->db_obj, $sql_selectAppointmentID);
+        $result_selectAppointmentID = $stmt_selectAppointmentID->get_result();
 
         $id = mysqli_fetch_assoc($result_selectAppointmentID);
 

@@ -47,7 +47,7 @@ function loadData(searchMethod : string, searchTerm : string)
         {
             400: function()
             {
-                showModal("Unable to access appointment details.", "An error has occured");
+                showModal("No appointments found.", "An error has occured");
             },
             404: function()
             {
@@ -449,7 +449,6 @@ function deleteAppointment()
     var toDelete = $("#details").attr("number");
 
     let $data = {del: toDelete};
-    
-    //Funktionsaufruf
+ 
     sendData("delete", JSON.stringify($data));
 }
