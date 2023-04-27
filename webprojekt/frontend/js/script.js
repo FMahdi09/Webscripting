@@ -51,7 +51,14 @@ function sendData(postMethod, data) {
         dataType: "json",
         success: function (response) {
             showModal("Your entry has been made.", "Success");
-            hideDetails();
+            //hide Details
+            $("#details").hide();
+            $("#user_name").val("");
+            $("#user_comment").val("");
+            $("#submitError").text("");
+            $("#user_name").removeClass("is-invalid");
+            $(".cmt").remove();
+            //hide creation and open list
             hideAppointmentCreation();
         },
         error: function (error) {
@@ -70,6 +77,12 @@ function showModal(modalMsg, modalTitle) {
 }
 function showAppointmentCreation() {
     hideAppointmentList();
+    $("#details").hide();
+    $("#user_name").val("");
+    $("#user_comment").val("");
+    $("#submitError").text("");
+    $("#user_name").removeClass("is-invalid");
+    $(".cmt").remove();
     $("#appointment-creation").show();
 }
 function hideAppointmentList() {

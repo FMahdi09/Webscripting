@@ -17,7 +17,7 @@ $(function(){
 
     $("#user_name").on("keydown", function(){
         $("#user_name").removeClass("is-invalid");
-    })
+    });
 });
 
 function loadData(searchMethod : string, searchTerm : string)
@@ -68,7 +68,16 @@ function sendData(postMethod : string, data : string)
         success: function(response)
         {
             showModal("Your entry has been made.", "Success");
-            hideDetails();
+            
+            //hide Details
+            $("#details").hide();
+            $("#user_name").val("");
+            $("#user_comment").val("");
+            $("#submitError").text("");
+            $("#user_name").removeClass("is-invalid");
+            $(".cmt").remove();
+
+            //hide creation and open list
             hideAppointmentCreation();
         },
         error: function(error)
@@ -94,6 +103,13 @@ function showModal(modalMsg : string, modalTitle : string)
 function showAppointmentCreation()
 {
     hideAppointmentList();
+
+    $("#details").hide();
+    $("#user_name").val("");
+    $("#user_comment").val("");
+    $("#submitError").text("");
+    $("#user_name").removeClass("is-invalid");
+    $(".cmt").remove();
 
     $("#appointment-creation").show();
 }
