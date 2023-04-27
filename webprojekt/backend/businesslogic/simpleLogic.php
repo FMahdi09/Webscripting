@@ -31,6 +31,10 @@ class SimpleLogic
                 $data = $this->dataHandler->insertAppointment($param);
                 break;
 
+            case "delete":
+                $data = $this->dataHandler->deleteAppointment($param);
+                break;
+
             default:
                 $data = null;
                 break;

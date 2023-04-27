@@ -2,6 +2,7 @@ $(function () {
     $("#details").hide();
     $("#appointment-creation").hide();
     showAppointmentList();
+    $("#delete").on("click", deleteAppointment);
     $("#add-meeting").on("click", addMeeting);
     $("#submitEntry").on("click", submitEntry);
     $("#goBack").on("click", hideDetails);
@@ -59,6 +60,7 @@ function sendData(postMethod, data) {
             $("#submitError").text("");
             $("#user_name").removeClass("is-invalid");
             $(".cmt").remove();
+            $("#mostVoted").text("");
             //hide creation and open list
             hideAppointmentCreation();
         },
@@ -84,6 +86,7 @@ function showAppointmentCreation() {
     $("#submitError").text("");
     $("#user_name").removeClass("is-invalid");
     $(".cmt").remove();
+    $("#mostVoted").text("");
     addMeeting();
     $("#appointment-creation").show();
 }
@@ -102,10 +105,12 @@ function hideDetails() {
     $("#submitError").text("");
     $("#user_name").removeClass("is-invalid");
     $(".cmt").remove();
+    $("#mostVoted").text("");
     showAppointmentList();
 }
 function showAppointmentDetails(response) {
     hideAppointmentList();
+    $("#details").attr("number", response[0]["id"]);
     $("#title").text(response[0]["title"]);
     $("#description").text(response[0]["description"]);
     $("#dates").empty();
@@ -113,9 +118,33 @@ function showAppointmentDetails(response) {
         if (response[i]["time_begin"] != undefined) {
             createDate(response[i]);
         }
+        else if (response[i]["date_id"] != undefined) {
+            var mostVoted_id = response[i]['date_id'];
+            $('p[date_id= ' + mostVoted_id + ']').each(function () {
+                $("#mostVoted").append($(this).text());
+                $("#mostVoted").append("  ");
+            });
+            $("#mostVoted").append("Votes: " + response[i]['votes']);
+        }
         else {
             createComment(response[i]);
         }
+    }
+    //check if appointment is closed
+    var today = new Date().toISOString().slice(0, 10);
+    if (today > response[0]["date"]) {
+        //disable inputs
+        $("#user_name").hide();
+        $("#user_comment").hide();
+        $("#submitEntry").hide();
+        $('.custom-checkbox').prop('disabled', 'disabled');
+    }
+    else {
+        //enable inputs
+        $("#user_name").show();
+        $("#user_comment").show();
+        $("#submitEntry").show();
+        $('.custom-checkbox').prop('disabled', false);
     }
     $("#details").show();
 }
@@ -210,9 +239,9 @@ function createDate(response) {
     $($main).append($col_left);
     $($main).append($col_right);
     //create field for date and time
-    var $date = $("<p>", { id: "date" });
+    var $date = $("<p>", { id: "date", "date_id": response["id"] });
     $($date).text(response["date"]);
-    var $time = $("<p>", { id: "time" });
+    var $time = $("<p>", { id: "time", "date_id": response["id"] });
     $($time).text(response["time_begin"] + " - " + response["time_end"]);
     $($col_left).append($date);
     $($col_left).append($time);
@@ -231,7 +260,14 @@ function createAppointments(response) {
         var $card = $("<div>", { id: $appointment.id, "class": "card mb-3" });
         /* create card-header */
         var $header = $("<div>", { "class": "card-header" });
-        $($header).text("Closes " + $appointment.date);
+        //check if appointment is closed
+        var today = new Date().toISOString().slice(0, 10);
+        if (today > $appointment.date) {
+            $($header).text("Closed");
+        }
+        else {
+            $($header).text("Closes " + $appointment.date);
+        }
         $($card).append($header);
         /* create card-body */
         var $body = $("<div>", { "class": "card-body" });
@@ -269,4 +305,10 @@ function addMeeting() {
     var $end = $("<input>", { id: "meetin-endtime", "type": "time" });
     $body.append($end);
     $("#meeting-dates").append($body);
+}
+function deleteAppointment() {
+    var toDelete = $("#details").attr("number");
+    var $data = { del: toDelete };
+    //Funktionsaufruf
+    sendData("delete", JSON.stringify($data));
 }

@@ -40,6 +40,13 @@ class DataHandler
         return true;
     }
 
+    public function deleteAppointment($data)
+    {
+        $this->deleteAppointmentDB($data);
+
+        return true;
+    }
+
     private function getAllAppointments()
     {
         $data = [];
@@ -101,6 +108,23 @@ class DataHandler
             $newAppoitnmentComment = new Comment($appointmentComments["name"], $appointmentComments["comment"]);
 
             $data[] = $newAppoitnmentComment;
+        }
+
+        //get date with most votes
+        $sql_mostVoted = "SELECT date_id, COUNT(date_id) as votes FROM entries WHERE appointment_id = '$id' GROUP BY date_id ORDER BY votes desc";
+
+        $result_mostVoted = mysqli_query($this->db_obj, $sql_mostVoted);
+
+        $mostVoted = mysqli_fetch_assoc($result_mostVoted);
+
+        if(isset($mostVoted["date_id"]))
+        {
+            $voted = array(
+                "date_id" => $mostVoted["date_id"],
+                "votes" => $mostVoted["votes"],
+            );
+    
+            $data[] = $voted;
         }
 
         return $data;
@@ -167,6 +191,12 @@ class DataHandler
 
             $stmt_insertDate->execute();
         }
+    }
 
+    private function deleteAppointmentDB($data)
+    {
+        $sql_delete = "DELETE FROM appointments WHERE id = '$data->del'";
+
+        mysqli_query($this->db_obj, $sql_delete);
     }
 }

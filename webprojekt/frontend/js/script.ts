@@ -5,6 +5,8 @@ $(function(){
 
     showAppointmentList();
 
+    $("#delete").on("click", deleteAppointment);
+
     $("#add-meeting").on("click", addMeeting);
 
     $("#submitEntry").on("click", submitEntry);
@@ -78,6 +80,8 @@ function sendData(postMethod : string, data : string)
             $("#submitError").text("");
             $("#user_name").removeClass("is-invalid");
             $(".cmt").remove();
+            $("#mostVoted").text("");
+            
 
             //hide creation and open list
             hideAppointmentCreation();
@@ -112,6 +116,7 @@ function showAppointmentCreation()
     $("#submitError").text("");
     $("#user_name").removeClass("is-invalid");
     $(".cmt").remove();
+    $("#mostVoted").text("");
 
     addMeeting();
 
@@ -141,6 +146,7 @@ function hideDetails()
     $("#submitError").text("");
     $("#user_name").removeClass("is-invalid");
     $(".cmt").remove();
+    $("#mostVoted").text("");
     
     showAppointmentList();
 }
@@ -148,6 +154,8 @@ function hideDetails()
 function showAppointmentDetails(response : any)
 {
     hideAppointmentList();
+
+    $("#details").attr("number", response[0]["id"]);
 
     $("#title").text(response[0]["title"]);
     $("#description").text(response[0]["description"]);
@@ -160,10 +168,41 @@ function showAppointmentDetails(response : any)
         {
             createDate(response[i]);
         }
+        else if(response[i]["date_id"] != undefined)
+        {
+            var mostVoted_id = response[i]['date_id'];
+
+            $('p[date_id= ' + mostVoted_id + ']').each(function(){
+                $("#mostVoted").append($(this).text());
+                $("#mostVoted").append("  ");
+            })
+
+            $("#mostVoted").append("Votes: " + response[i]['votes']);
+        }
         else
         {
             createComment(response[i]);
         }
+    }
+
+    //check if appointment is closed
+    let today = new Date().toISOString().slice(0, 10);
+
+    if(today > response[0]["date"])
+    {
+        //disable inputs
+        $("#user_name").hide();
+        $("#user_comment").hide();
+        $("#submitEntry").hide();  
+        $('.custom-checkbox').prop('disabled', 'disabled');
+    }
+    else
+    {
+        //enable inputs
+        $("#user_name").show();
+        $("#user_comment").show();
+        $("#submitEntry").show();
+        $('.custom-checkbox').prop('disabled', false);
     }
 
     $("#details").show();
@@ -308,10 +347,10 @@ function createDate(response : any)
     $($main).append($col_right);
 
     //create field for date and time
-    var $date = $("<p>", {id : "date"});
+    var $date = $("<p>", {id : "date", "date_id": response["id"]});
     $($date).text(response["date"]);
 
-    var $time = $("<p>", {id: "time"});
+    var $time = $("<p>", {id: "time", "date_id": response["id"]});
     $($time).text(response["time_begin"] + " - " + response["time_end"]);
 
     $($col_left).append($date);
@@ -340,7 +379,19 @@ function createAppointments(response: any)
 
         /* create card-header */
         var $header = $("<div>", {"class": "card-header"});
-        $($header).text("Closes " + $appointment.date);
+
+        //check if appointment is closed
+        let today = new Date().toISOString().slice(0, 10)
+
+        if(today > $appointment.date)
+        {
+            $($header).text("Closed");
+        }
+        else
+        {
+            $($header).text("Closes " + $appointment.date);
+        }
+
         $($card).append($header);
 
         /* create card-body */
@@ -391,4 +442,14 @@ function addMeeting()
     $body.append($end);
 
     $("#meeting-dates").append($body);
+}
+
+function deleteAppointment()
+{
+    var toDelete = $("#details").attr("number");
+
+    let $data = {del: toDelete};
+    
+    //Funktionsaufruf
+    sendData("delete", JSON.stringify($data));
 }
